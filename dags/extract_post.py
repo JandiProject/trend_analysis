@@ -8,7 +8,7 @@ from common.parser import RSSParser
 
 with DAG(
     dag_id="extract_post",
-    schedule="0 0 * * *",
+    schedule="@weekly",
     start_date=pendulum.datetime(2025, 1, 1, tz="Asia/Seoul"),
     catchup=False,
     tags=["example", "python"],

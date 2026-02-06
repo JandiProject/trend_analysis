@@ -2,7 +2,6 @@ import base64
 import json
 from bs4 import BeautifulSoup
 
-
 urls = rss_feeds = {
     "무신사(MUSINSA)": "https://medium.com/feed/musinsa-tech",
     "네이버 D2": "https://d2.naver.com/d2.atom",
