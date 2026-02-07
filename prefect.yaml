@@ -17,7 +17,6 @@ pull:
 - prefect.deployments.steps.git_clone:
     repository: https://github.com/JandiProject/trend_analysis.git
     branch: main
-    access_token: null
 
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
@@ -27,5 +26,5 @@ deployments:
   schedule:
     cron: "0 0 * * *"
   work_pool:
-    name: "raspberry-pi-pool"
+    name: "local-pool"
     work_queue_name: null

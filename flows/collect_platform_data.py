@@ -1,5 +1,4 @@
 from prefect import flow, task
-from datetime import timedelta
 
 
 @task(name="load_config")
