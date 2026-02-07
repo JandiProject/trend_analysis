@@ -80,12 +80,16 @@ services:
     volumes:
       - /home/jdk829355/blog_data:/opt/prefect/blog_data
   sqlite-browser:
-    image: adminer
+    image: python:3.12-slim
     container_name: sqlite-browser
     ports:
       - "8080:8080"
     volumes:
       - /home/jdk829355/blog_data:/data
+    working_dir: /data
+    # 컨테이너가 뜰 때 ARM용 sqlite-web을 즉석 설치하고 실행합니다.
+    command: >
+      sh -c "pip install --no-cache-dir sqlite-web && sqlite-web articles.db -p 8080 -H 0.0.0.0"
     restart: always
 
 volumes:
