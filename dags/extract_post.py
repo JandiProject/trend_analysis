@@ -59,7 +59,7 @@ with DAG(
         decoded_platform = config["decoded_platform"]
         with open(os.path.join(base_path, "data", f"{decoded_platform}_articles.json"), "w", encoding="utf-8") as f:
             json.dump(articles_json, f, ensure_ascii=False, indent=4)
-
+AWS_ACCESS_KEY_ID
         # S3에 Parquet 파일로 저장
         df = pd.DataFrame(articles_json)
         articles_parquet = df.to_parquet()

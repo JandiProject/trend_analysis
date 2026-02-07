@@ -5,7 +5,6 @@ annotated-doc==0.0.4
 annotated-types==0.7.0
 anyio==4.12.1
 apprise==1.9.7
-APScheduler==3.11.2
 asgi-lifespan==2.1.0
 asyncpg==0.31.0
 attrs==25.4.0
