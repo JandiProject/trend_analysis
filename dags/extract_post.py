@@ -83,5 +83,5 @@ with DAG(
         return
     
     configs = load_config()
-    check_s3() >> configs
+    check_s3() >> configs # pyright: ignore[reportUnusedExpression]
     collect_platform_data.expand(config=configs)

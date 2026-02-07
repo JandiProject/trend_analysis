@@ -1,7 +1,7 @@
 from typing import List
 from datetime import datetime
 import logging
-from common.models.rss_schema import ArticleSchema
+from models.rss_schema import ArticleSchema
 
 
 logger = logging.getLogger(__name__)
