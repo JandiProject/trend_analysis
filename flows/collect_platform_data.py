@@ -1,4 +1,5 @@
 from prefect import flow, task
+from prefect.task_runners import ThreadPoolTaskRunner
 
 
 @task(name="load_config")
@@ -65,12 +66,17 @@ def save_to_s3(data):
     
 
 
-@flow(name="RSS Insight Pipeline", log_prints=True)
+@flow(task_runner=ThreadPoolTaskRunner(max_workers=4), name="RSS Insight Pipeline", log_prints=True)
 def rss_flow():
     configs = load_config()
     collected_data = collect_platform_data.map(configs)
-    save_to_sqlite.map(collected_data)
-    save_to_s3.map(collected_data)
+    sqlite_futures = save_to_sqlite.map(collected_data)
+    s3_futures = save_to_s3.map(collected_data)
+
+    [f.result() for f in sqlite_futures]
+    [f.result() for f in s3_futures]
+
+
 
 if __name__ == "__main__":
     rss_flow()
