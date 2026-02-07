@@ -66,7 +66,7 @@ def save_to_s3(data):
     
 
 
-@flow(task_runner=ThreadPoolTaskRunner(max_workers=4), name="RSS Insight Pipeline", log_prints=True)
+@flow(task_runner=ThreadPoolTaskRunner(max_workers=4), name="RSS Insight Pipeline", log_prints=True) # type: ignore
 def rss_flow():
     configs = load_config()
     collected_data = collect_platform_data.map(configs)
