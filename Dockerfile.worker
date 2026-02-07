@@ -20,7 +20,3 @@ COPY requirements.txt .
 # --prefer-binary 옵션은 라즈베리파이에서 매우 중요합니다.
 # 소스 코드를 직접 컴파일(한 세월 걸림)하는 대신, 미리 빌드된 파일을 우선 찾습니다.
 RUN pip install --no-cache-dir --prefer-binary -r requirements.txt
-
-# 4. 유저 전환
-# 공식 이미지의 기본 유저인 prefect로 전환하여 보안을 강화합니다.
-USER prefect
