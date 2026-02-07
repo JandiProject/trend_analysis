@@ -68,6 +68,7 @@ prefect==3.6.16
 prometheus_client==0.24.1
 py-key-value-aio==0.3.0
 py-key-value-shared==0.3.0
+pyarrow==23.0.0
 pycparser==3.0
 pydantic==2.12.5
 pydantic-extra-types==2.11.0
