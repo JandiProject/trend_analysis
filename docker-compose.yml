@@ -80,13 +80,12 @@ services:
     volumes:
       - /home/jdk829355/blog_data:/opt/prefect/blog_data
   sqlite-browser:
-    image: coleifer/sqlite-web
+    image: adminer
+    container_name: sqlite-browser
     ports:
       - "8080:8080"
     volumes:
       - /home/jdk829355/blog_data:/data
-    environment:
-      - SQLITE_DATABASE=articles.db
     restart: always
 
 volumes:
