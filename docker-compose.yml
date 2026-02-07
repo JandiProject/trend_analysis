@@ -87,9 +87,9 @@ services:
     volumes:
       - /home/jdk829355/blog_data:/data
     working_dir: /data
-    # 컨테이너가 뜰 때 ARM용 sqlite-web을 즉석 설치하고 실행합니다.
+    # sqlite-web 대신 python -m sqlite_web으로 호출
     command: >
-      sh -c "pip install --no-cache-dir sqlite-web && sqlite-web articles.db -p 8080 -H 0.0.0.0"
+      sh -c "pip install --no-cache-dir sqlite-web && python -m sqlite_web articles.db -p 8080 -H 0.0.0.0"
     restart: always
 
 volumes:
