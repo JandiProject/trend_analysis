@@ -15,7 +15,7 @@ def load_config():
 @task(name="collect_platform_data")
 def collect_platform_data(config):
     # 수집이 끝나면 실행될 분석 로직
-    print(f"분석 중: {config['platform']}")
+    print(f"분석 중: {config['decoded_platform']}")
     return "분석 완료"
 
 # 2. 흐름 정의 (Airflow의 DAG 역할)
