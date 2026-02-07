@@ -28,8 +28,8 @@ def collect_platform_data(config):
 def save_to_sqlite(data):
     import os
     import sqlite3
-    base_path = os.path.dirname(os.path.dirname(__file__))
-    db_path = os.path.join(base_path, "blog_data", "articles.db")
+    base_path = "/opt/prefect/blog_data"
+    db_path = os.path.join(base_path, "articles.db")
     conn = sqlite3.connect(db_path)
     platform = data['platform']
     df = data['data']
