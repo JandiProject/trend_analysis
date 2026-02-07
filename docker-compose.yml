@@ -73,8 +73,12 @@ services:
         condition: service_healthy
     environment:
       PREFECT_API_URL: http://100.64.115.22:4200/api
+    env_file:
+      - ./.env
     command: prefect worker start --pool local-pool
     restart: on-failure
+    volumes:
+      - /home/jdk829355/blog_data:/opt/prefect/blog_data
 
 volumes:
   postgres_data:
