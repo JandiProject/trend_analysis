@@ -13,7 +13,7 @@ def load_config():
         config = json.load(f)
     return [{"platform": key, "url": config[key], "decoded_platform": base64.b64decode(key).decode('utf-8')} for key in config]
 
-@task(name="collect_platform_data", task_run_name="{config['decoded_platform']}_data_collection")
+@task(name="collect_platform_data")
 def collect_platform_data(config):
     import pandas as pd
     from parser.parser import RSSParser
