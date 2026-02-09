@@ -47,8 +47,9 @@ for platform, url in urls.items():
         # 2. HTML 태그를 제거하고 순수 텍스트 길이만 측정
         clean_text = BeautifulSoup(content_body, "html.parser").get_text()
         total_chars += len(clean_text)
-    print(f"평균 글자 수: {total_chars/len(feed.entries)}")
-    if total_chars>5000:
+    mean_chars = total_chars / len(feed.entries) if feed.entries else 0
+    print(f"평균 글자 수: {mean_chars}")
+    if mean_chars > 5000:
         platform = base64.b64encode(platform.encode('utf-8')).decode('utf-8')
         only_rss[platform] = url
 target_platform = json.dumps(only_rss, ensure_ascii=False)
