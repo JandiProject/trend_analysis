@@ -22,7 +22,7 @@ pull:
 deployments:
 - name: collect_platform_data_deployment
   schedule: {}
-  entrypoint: flows/collect_platform_data.py:rss_flow
+  entrypoint: flows/pipeline.py:trend_keyword_extraction_pipeline
   schedule:
     cron: "0 0 * * 0"
   work_pool:
