@@ -7,6 +7,9 @@ from models.rss_schema import ArticleSchema
 logger = logging.getLogger(__name__)
 
 class RSSParser():
+    """
+    RSS 피드 파서 클래스
+    """
     platform: str = ""
 
 
