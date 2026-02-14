@@ -23,6 +23,7 @@ class ExternalPost(Base):
     
     # 분석 상태 및 결과
     is_analyzed = Column(Boolean, default=False, index=True)
+    summary = Column(Text, nullable=True)
 
 class PostKeywordMapping(Base):
     __tablename__ = 'external_posts_keywords'

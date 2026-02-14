@@ -86,6 +86,7 @@ def upload_results_to_db(results):
                     'id': result['id'],
                     'category': result['category'],
                     'is_analyzed': True,
+                    'summary': result.get('summary', None),
                 })
         db.bulk_update_mappings(ExternalPost, data_to_update) # type: ignore
         logger.info(f"PostgreSQL 포스트 업데이트 성공: {len(data_to_update)} 개의 포스트 업데이트 시도")
