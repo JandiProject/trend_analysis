@@ -197,9 +197,9 @@ def data_collection_flow():
     if len(collected_results) == 0:
         logger.warning("수집된 데이터가 없습니다.")
         return []
-    sqlite_futures = save_to_sqlite.map(collected_results)
+    # sqlite_futures = save_to_sqlite.map(collected_results)
     s3_futures = save_to_s3.map(collected_results)
-    [f.result() for f in sqlite_futures]
+    # [f.result() for f in sqlite_futures]
     obj_keys = [f.result() for f in s3_futures]
 
     insert_to_postgres(collected_results)
