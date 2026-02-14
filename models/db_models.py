@@ -27,5 +27,5 @@ class ExternalPost(Base):
 
 class PostKeywordMapping(Base):
     __tablename__ = 'external_posts_keywords'
-    keyword_id = Column(Integer, ForeignKey('keywords.id'), primary_key=True)
-    post_id = Column(String(64), ForeignKey('external_posts.id'), primary_key=True)
+    keyword_id = Column(Integer, ForeignKey('keywords.id', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True)
+    post_id = Column(String(64), ForeignKey('external_posts.id', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True)
