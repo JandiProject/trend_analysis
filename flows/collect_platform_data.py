@@ -37,7 +37,7 @@ def collect_platform_data(config):
     특정 플랫폼의 RSS 피드를 파싱하고 중복 제거 후 DataFrame으로 반환
     """
     import pandas as pd
-    from utils.parser import RSSParser
+    from plugins.parser.parser import RSSParser
     from services.service_db import DbSession
     db = DbSession()
     
