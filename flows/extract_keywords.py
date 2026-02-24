@@ -54,6 +54,7 @@ def upload_results_to_db(results):
     from services.service_db import DbSession
     from models.db_models import ExternalPost, Keyword, PostKeywordMapping
     from sqlalchemy.dialects.postgresql import insert
+    from sqlalchemy import text
 
     db = DbSession()
     logger = get_run_logger()
@@ -104,6 +105,13 @@ def upload_results_to_db(results):
         stmt = insert(PostKeywordMapping).values(post_keyword_mappings)
         stmt = stmt.on_conflict_do_nothing()
         db.execute(stmt)
+
+        try: 
+            db.execute(text('REFRESH MATERIALIZED VIEW "TRENDING_KEYWORDS_VIEW"'))  # Simple query to test connection
+            db.execute(text('REFRESH MATERIALIZED VIEW "ARTICLES_MENTIONING_KEYWORDS_VIEW"'))
+        except Exception as e:
+            logger.error(f"Failed to refresh materialized views: {e}")
+            
         db.commit()
     except Exception as e:
         logger.error(f"PostgreSQL 키워드 삽입 실패: {e}")
