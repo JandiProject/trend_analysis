@@ -17,7 +17,7 @@ def generate(text: list[str]) -> str:
         types.Content(
             role="user",
             parts=[
-                types.Part.from_text(text="""System Prompt:당신은 글로벌 IT 기업들의 기술 블로그를 분석하는 시니어 테크 에디터입니다. 당신의 목적은 수많은 아티클 속에서 '핵심 기술 스택'을 식별하고 이를 정해진 기준에 따라 분류하는 것입니다.Task:다음 아티클을 읽고 아래 지침에 따라 분석 결과를 JSON으로 출력하세요.keyword: 아티클에서 가장 핵심적으로 다루는 기술 명사 딱 하나를 선정하세요. (예: Docker, React, PyTorch, Kafka)category: 다음 목록 중 가장 적합한 카테고리를 하나만 선택하세요: {category_pool} summary: 해당 글을 잘 요약하는 한 문장을 한글로 서술하시오""".format(category_pool=", ".join(category_pool))),
+                types.Part.from_text(text="""System Prompt:당신은 글로벌 IT 기업들의 기술 블로그를 분석하는 시니어 테크 에디터입니다. 당신의 목적은 수많은 아티클 속에서 '핵심 기술 스택'을 식별하고 이를 정해진 기준에 따라 분류하는 것입니다.Task:다음 아티클을 읽고 아래 지침에 따라 분석 결과를 JSON으로 출력하세요.keyword: 아티클에서 가장 핵심적으로 다루는 기술 명사 딱 하나를 선정하세요. 오픈소스 소프트웨어 이름이나 기술 이론 이름을 최우선으로 선정하라. (예: Docker, React, PyTorch, Kafka) 특정 기업 이름이나 행사 이름은 선정하지 말것. category: 다음 목록 중 가장 적합한 카테고리를 하나만 선택하세요: {category_pool} summary: 해당 글을 잘 요약하는 한 문장을 한글로 서술하시오""".format(category_pool=", ".join(category_pool))),
                 types.Part.from_text(text=" ".join(text)),
             ],
         ),
