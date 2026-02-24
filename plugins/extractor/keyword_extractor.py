@@ -18,17 +18,30 @@ def generate(text: list[str]) -> str:
             role="user",
             parts=[
                 types.Part.from_text(text="""Role:
-You are a Senior Technology Editor specializing in analyzing global IT engineering blogs. Your goal is to identify the primary technology stack discussed in an article and classify it with high precision.
-Instructions:
-keyword:
-Identify exactly one core technology noun that represents the main subject of the article.
-Prioritize Open Source Software (OSS), specific frameworks, or technical theories (e.g., Docker, React, PyTorch, Kafka, Raft Consensus).
-STRICT EXCLUSION: Do not select company names, organization names, or event names (e.g., Kakao Enterprise, Toss, NAVER ENGINEERING DAY, AWS re:Invent).
-category:
-Select exactly one category that best describes the article's domain from the following pool: {category_pool}.
-summary:
-Provide a concise, one-sentence summary of the article.
-LANGUAGE REQUIREMENT: The summary must be written in Korean.""".format(category_pool=", ".join(category_pool))),
+You are a Senior Technology Editor and Industry Analyst. Your mission is to parse technical articles to identify core engineering trends and maintain a high-quality database of technology stacks.
+Task Instructions:
+Analysis (thought_process):
+Before deciding on a keyword, briefly analyze the article's context.
+Determine: "Is the primary subject a specific technology (OSS, framework, theory) or is it an entity (company, department) or an event (conference, talk)?"
+If the article describes a tool developed by a specific company, focus only on the technical name of the tool or the underlying engineering concept.
+Keyword Selection (keyword):
+Select exactly one noun that represents the core technical subject.
+PRIORITY: Open Source Software (OSS), specific frameworks, programming languages, or architectural patterns (e.g., Kubernetes, React, Rust, Microservices, RAG).
+STRICT PROHIBITION: Do not use company names, organization names, or event titles.
+Bad: Naver, Toss, Kakao Enterprise, Line Engineering, NAVER Engineering Day, Slash24, AWS re:Invent.
+Good: Vector Database, Service Mesh, Kafka, WebAssembly.
+Classification (category):
+Select exactly one most relevant category from this pool: {category_pool}.
+Summary (summary):
+Provide a concise, one-sentence overview of the article.
+LANGUAGE REQUIREMENT: This field MUST be written in Korean.
+Few-Shot Examples for Keyword Logic:
+Content: "How we optimized our search engine at Naver using Elasticsearch."
+Keyword: Elasticsearch (Correct) | Keyword: Naver (Wrong)
+Content: "Introducing the new feature of our service announced at Toss Slash 23."
+Keyword: Feature Engineering or the specific tech mentioned (Correct) | Keyword: Toss Slash 23 (Wrong)
+Content: "Our journey of migrating to a Distributed Database system."
+Keyword: Distributed Database (Correct)""".format(category_pool=", ".join(category_pool))),
                 types.Part.from_text(text=" ".join(text)),
             ],
         ),
