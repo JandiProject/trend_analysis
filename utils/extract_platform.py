@@ -23,7 +23,26 @@ urls = rss_feeds = {
     "Engineer at Meta": "https://code.facebook.com/posts/rss/",
     "Reddit": "https://reddit.com/r/ExperiencedDevs.rss",
     "Netflix TechBlog": "https://medium.com/feed/netflix-techblog",
-    "Amazon": "https://aws.amazon.com/ko/blogs/tech/feed"
+    "Amazon": "https://aws.amazon.com/ko/blogs/tech/feed",
+    "Stack Overflow": "https://stackoverflow.blog/feed",
+    "DEV Community": "https://dev.to/feed",
+    "freeCodeCamp": "https://freecodecamp.org/news/rss",
+    "A List Apart": "https://alistapart.com/main/feed",
+    "DZone": "https://feeds.dzone.com/home",
+    "Smashing Magazine": "https://smashingmagazine.com/feed",
+    "Shaaf's Blog": "https://shaaf.dev/index.xml",
+    "Google Developers Blog": "https://feeds.feedburner.com/GDBcode",
+    "Site Point Blog": "https://sitepoint.com/sitepoint.rss",
+    "Codrops": "https://tympanus.net/codrops/feed",
+    "SCAND Blog": "https://scand.com/company/blog/feed",
+    "SD Times": "https://sdtimes.com/feed",
+    "Code Simplicity": "https://codesimplicity.com/feed",
+    "Jon Skeet's Coding Blog": "https://codeblog.jonskeet.uk/feed",
+    "Codemotion Magazine": "https://codemotion.com/magazine/feed",
+    "Simple Programmer": "https://simpleprogrammer.com/feed",
+    "Smashing Hub": "https://smashinghub.com/feed",
+    "WebAppers": "https://feeds.feedburner.com/Webappers",
+    "Pontikis.net Blog": "https://pontikis.net/feed"
 }
 import feedparser
 
