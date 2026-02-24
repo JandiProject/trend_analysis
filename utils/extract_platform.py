@@ -19,7 +19,6 @@ urls = rss_feeds = {
     "Hyperconnect": "https://hyperconnect.github.io/feed.xml",
     "요기요(yogiyo)": "https://techblog.yogiyo.co.kr/feed",
     "쏘카(Socar)": "https://tech.socarcorp.kr/feed",
-    "리디(RIDI)": "https://www.ridicorp.com/feed",
     "NHN Toast": "https://meetup.toast.com/rss",
     "Engineer at Meta": "https://code.facebook.com/posts/rss/",
     "Reddit": "https://reddit.com/r/ExperiencedDevs.rss",
