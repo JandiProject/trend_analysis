@@ -83,7 +83,7 @@ def upload_results_to_db(results):
 
         # field-id 매핑
         field_to_id = {}
-        existing_fields = db.query(Fields).filter(Fields.field_name.in_(keywords)).all()
+        existing_fields = db.query(Fields).all()
         for field in existing_fields:
             field_to_id[field.field_name] = field.field_id
         print(field_to_id)
