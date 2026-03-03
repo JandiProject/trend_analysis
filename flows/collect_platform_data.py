@@ -1,5 +1,6 @@
 from prefect import flow, task, get_run_logger
 from prefect.task_runners import ThreadPoolTaskRunner
+from plugins.hooks.log_and_notify import upload_logs_to_s3_and_notify
 
 
 
@@ -182,7 +183,7 @@ def insert_to_postgres(data):
         db.close()
 
 
-@flow(task_runner=ThreadPoolTaskRunner(max_workers=4), name="Data Collection Flow", log_prints=True) # type: ignore
+@flow(task_runner=ThreadPoolTaskRunner(max_workers=4),on_completion=[upload_logs_to_s3_and_notify], on_failure=[upload_logs_to_s3_and_notify], name="Data Collection Flow", log_prints=True) # type: ignore
 def data_collection_flow():
     configs = load_config()
     collected_futures = collect_platform_data.map(configs)

@@ -2,6 +2,7 @@ from prefect import flow, task, get_run_logger, unmapped
 from prefect.task_runners import ThreadPoolTaskRunner
 
 from models.db_models import Fields
+from plugins.hooks.log_and_notify import upload_logs_to_s3_and_notify
 
 @task(name="load_unanalized_data")
 def load_unanalized_data():
@@ -135,7 +136,7 @@ def upload_results_to_db(results):
 def backup_results_to_s3(results):
     pass
 
-@flow(name="Extract keywords flow", task_runner=ThreadPoolTaskRunner(max_workers=4), log_prints=True) # type: ignore
+@flow(name="Extract keywords flow", on_completion=[upload_logs_to_s3_and_notify], on_failure=[upload_logs_to_s3_and_notify], task_runner=ThreadPoolTaskRunner(max_workers=4), log_prints=True) # type: ignore
 def extract_keywords_flow(collected_obj_keys: list[str]):
     logger = get_run_logger()
 
