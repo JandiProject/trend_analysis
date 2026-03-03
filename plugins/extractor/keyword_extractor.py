@@ -2,8 +2,10 @@
 # pip install google-genai
 
 import os
+from typing import Literal
 from google import genai
 from google.genai import types
+from pydantic import BaseModel
 
 category_to_field = {
     # Tech
@@ -20,8 +22,30 @@ category_to_field = {
     # Humanities
     "Literature": "Humanities", "History": "Humanities", "Linguistics": "Humanities",
     # Social
-    "Economics": "Social", "Geography": "Social", "Social": "Social"
+    "Economics": "Social", "Geography": "Social", "Social": "Social", "Other": "Other"
 }
+
+categories = [
+    "IT", "Electronics", "Backend", "Frontend", "Infra", "Security", "Mobile", "Embedded", "Game", "Robot",
+    "CV", "NLP", "DA", "DE",
+    "Bio",
+    "Daily", "Review", "Cook", "Trip", "Beauty", "Movie", "Fashion", "Career",
+    "Literature", "History", "Linguistics",
+    "Economics", "Geography", "Social", "Other"
+]
+Categories = Literal [
+    "IT", "Electronics", "Backend", "Frontend", "Infra", "Security", "Mobile", "Embedded", "Game", "Robot",
+    "CV", "NLP", "DA", "DE",
+    "Bio",
+    "Daily", "Review", "Cook", "Trip", "Beauty", "Movie", "Fashion", "Career",
+    "Literature", "History", "Linguistics",
+    "Economics", "Geography", "Social", "Other"
+]
+
+class ArticleClassification(BaseModel):
+    keywords: list[str]
+    category: Categories
+    summary: str
 
 def generate(text: list[str]) -> str:
     client = genai.Client(
@@ -29,14 +53,6 @@ def generate(text: list[str]) -> str:
     )
 
     model = "gemini-2.5-flash-lite"
-    categories = [
-    "IT", "Electronics", "Backend", "Frontend", "Infra", "Security", "Mobile", "Embedded", "Game", "Robot",
-    "CV", "NLP", "DA", "DE",
-    "Bio",
-    "Daily", "Review", "Cook", "Trip", "Beauty", "Movie", "Fashion", "Career",
-    "Literature", "History", "Linguistics",
-    "Economics", "Geography", "Social"
-]
     contents = [
         types.Content(
             role="user",
@@ -50,24 +66,7 @@ def generate(text: list[str]) -> str:
     ]
     generate_content_config = types.GenerateContentConfig(
         response_mime_type="application/json",
-        response_schema=genai.types.Schema(
-            type = genai.types.Type.OBJECT,
-            required = ["keywords", "category", "summary"],
-            properties = {
-                "keywords": genai.types.Schema(
-                    type = genai.types.Type.ARRAY,
-                    items = genai.types.Schema(
-                        type = genai.types.Type.STRING,
-                    ),
-                ),
-                "category": genai.types.Schema(
-                    type = genai.types.Type.STRING,
-                ),
-                "summary": genai.types.Schema(
-                    type = genai.types.Type.STRING,
-                ),
-            },
-        ),
+        response_schema=ArticleClassification.model_json_schema(),
     )
     result = ""
 
