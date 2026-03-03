@@ -1,6 +1,8 @@
 from prefect import flow, task, get_run_logger, unmapped
 from prefect.task_runners import ThreadPoolTaskRunner
 
+from models.db_models import Fields
+
 @task(name="load_unanalized_data")
 def load_unanalized_data():
     """
@@ -79,6 +81,13 @@ def upload_results_to_db(results):
             keyword_to_id[kw.keyword] = kw.id
         print(keyword_to_id)
 
+        # field-id 매핑
+        field_to_id = {}
+        existing_fields = db.query(Fields).filter(Fields.field_name.in_(keywords)).all()
+        for field in existing_fields:
+            field_to_id[field.field_name] = field.field_id
+        print(field_to_id)
+
         # is_analyzed, category 업데이트
         data_to_update = []
         for result in results:
@@ -88,6 +97,7 @@ def upload_results_to_db(results):
                     'category': result['category'],
                     'is_analyzed': True,
                     'summary': result.get('summary', None),
+                    'field_id': field_to_id.get(result.get('field', None), None),
                 })
         db.bulk_update_mappings(ExternalPost, data_to_update) # type: ignore
         logger.info(f"PostgreSQL 포스트 업데이트 성공: {len(data_to_update)} 개의 포스트 업데이트 시도")

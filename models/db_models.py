@@ -24,7 +24,7 @@ class ExternalPost(Base):
     # 분석 상태 및 결과
     is_analyzed = Column(Boolean, default=False, index=True)
     summary = Column(Text, nullable=True)
-    field_id = Column(Integer, ForeignKey('FIELDS.id',ondelete='CASCADE', onupdate='CASCADE'), nullable=True, index=True)
+    field_id = Column(Integer, ForeignKey('FIELDS.field_id',ondelete='CASCADE', onupdate='CASCADE'), nullable=True, index=True)
 class PostKeywordMapping(Base):
     __tablename__ = 'EXTERNAL_POSTS_KEYWORDS'
     keyword_id = Column(Integer, ForeignKey('KEYWORDS.id', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True)
@@ -32,5 +32,5 @@ class PostKeywordMapping(Base):
 
 class Fields(Base):
     __tablename__ = 'FIELDS'
-    id = Column(Integer, primary_key=True, autoincrement=True, default=1)
-    name = Column(String(50), unique=True, nullable=False)
+    field_id = Column(Integer, primary_key=True, autoincrement=True, default=1)
+    field_name = Column(String(50), unique=True, nullable=False)
