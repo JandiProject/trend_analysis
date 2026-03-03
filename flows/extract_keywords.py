@@ -120,6 +120,7 @@ def upload_results_to_db(results):
         try: 
             db.execute(text('REFRESH MATERIALIZED VIEW "TRENDING_KEYWORDS_VIEW"'))  # Simple query to test connection
             db.execute(text('REFRESH MATERIALIZED VIEW "ARTICLES_MENTIONING_KEYWORDS_VIEW"'))
+            db.execute(text('REFRESH MATERIALIZED VIEW "USERS_MENTIONING_KEYWORDS_VIEW"'))
         except Exception as e:
             logger.error(f"Failed to refresh materialized views: {e}")
             
