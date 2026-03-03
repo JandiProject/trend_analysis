@@ -55,6 +55,7 @@ def extract_keywords(s3_data:dict):
 def upload_results_to_db(results):
     from services.service_db import DbSession
     from models.db_models import ExternalPost, Keyword, PostKeywordMapping
+    from plugins.extractor.keyword_extractor import category_to_field
     from sqlalchemy.dialects.postgresql import insert
     from sqlalchemy import text
 
@@ -97,7 +98,7 @@ def upload_results_to_db(results):
                     'category': result['category'],
                     'is_analyzed': True,
                     'summary': result.get('summary', None),
-                    'field_id': field_to_id.get(result.get('field', None), None),
+                    'field_id': field_to_id.get(category_to_field.get(result['category']), None),
                 })
         db.bulk_update_mappings(ExternalPost, data_to_update) # type: ignore
         logger.info(f"PostgreSQL 포스트 업데이트 성공: {len(data_to_update)} 개의 포스트 업데이트 시도")

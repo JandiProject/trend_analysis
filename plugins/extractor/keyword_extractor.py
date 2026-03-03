@@ -5,6 +5,23 @@ import os
 from google import genai
 from google.genai import types
 
+category_to_field = {
+    # Tech
+    "IT": "Tech", "Electronics": "Tech", "Backend": "Tech", "Frontend": "Tech",
+    "Infra": "Tech", "Security": "Tech", "Mobile": "Tech", "Embedded": "Tech",
+    "Game": "Tech", "Robot": "Tech",
+    # AI/Data
+    "CV": "AI/Data", "NLP": "AI/Data", "DA": "AI/Data", "DE": "AI/Data",
+    # Bio
+    "Bio": "Bio",
+    # Daily
+    "Daily": "Daily", "Review": "Daily", "Cook": "Daily", "Trip": "Daily",
+    "Beauty": "Daily", "Movie": "Daily", "Fashion": "Daily", "Career": "Daily",
+    # Humanities
+    "Literature": "Humanities", "History": "Humanities", "Linguistics": "Humanities",
+    # Social
+    "Economics": "Social", "Geography": "Social", "Social": "Social"
+}
 
 def generate(text: list[str]) -> str:
     client = genai.Client(
@@ -12,16 +29,21 @@ def generate(text: list[str]) -> str:
     )
 
     model = "gemini-2.5-flash-lite"
-    classification = """
-Tech: [IT,Electronics,Backend,Frontend,Infra,Security,Mobile,Embedded,Game,Robot] AI/Data: [CV,NLP,DA,DE] Bio: [Bio] Daily: [Daily,Review,Cook,Trip,Beauty,Movie,Fashion,Career] Humanities: [Literature,History,Linguistics] Social: [Economics,Geography,Social]
-"""
+    categories = [
+    "IT", "Electronics", "Backend", "Frontend", "Infra", "Security", "Mobile", "Embedded", "Game", "Robot",
+    "CV", "NLP", "DA", "DE",
+    "Bio",
+    "Daily", "Review", "Cook", "Trip", "Beauty", "Movie", "Fashion", "Career",
+    "Literature", "History", "Linguistics",
+    "Economics", "Geography", "Social"
+]
     contents = [
         types.Content(
             role="user",
             parts=[
                 types.Part.from_text(text="""
-                                     Role: You are a Senior Technology Editor and Industry Analyst. Your mission is to parse technical articles to identify core engineering trends and maintain a high-quality database of technology stacks. Classification Schema (field: [category]): {classification} STRICT RULE: You MUST only use fields and categories that exist in the Classification Schema above. Do NOT invent, infer, or approximate new fields or categories. If no field or category fits, select the closest existing one and explain why in thought_process. Any output containing a field or category outside the schema is considered invalid. Task Instructions: Analysis (thought_process): Before deciding on a keyword, briefly analyze the article's context. Determine: "Is the primary subject a specific technology (OSS, framework, theory) or is it an entity (company, department) or an event (conference, talk)?" If the article describes a tool developed by a specific company, focus only on the technical name of the tool or the underlying engineering concept. Keyword Selection (keyword): Select exactly one noun that represents the core technical subject. PRIORITY: Open Source Software (OSS), specific frameworks, programming languages, or architectural patterns (e.g., Kubernetes, React, Rust, Microservices, RAG). STRICT PROHIBITION: Do not use company names, organization names, or event titles. Bad: Naver, Toss, Kakao Enterprise, Line Engineering, NAVER Engineering Day, Slash24, AWS re:Invent. Good: Vector Database, Service Mesh, Kafka, WebAssembly. Classification (field & category): Step 1 - Field Selection: First, determine the most relevant field from the Classification Schema. Ask yourself: "What is the broadest domain this article belongs to?" If the article involves engineering, software, or hardware → consider Tech or AI/Data. If the article involves life sciences or medical research → consider Bio. If the article involves culture, lifestyle, or personal topics → consider Daily. If the article involves history, language, or literary analysis → consider Humanities. If the article involves economy, society, or political structure → consider Social. VALIDATION: After selecting a field, confirm it exists in the Classification Schema. If not, reselect. Step 2 - Category Selection: Within the selected field, select exactly one most relevant category. Ask yourself: "Among the categories under this field, which one most precisely describes the core subject?" VALIDATION: After selecting a category, confirm it exists under the selected field in the Classification Schema. If not, reselect within the same field. If no category fits perfectly, select the closest one and note it in thought_process. Summary (summary): Provide a concise, one-sentence overview of the article. LANGUAGE REQUIREMENT: This field MUST be written in Korean. Few-Shot Examples for Keyword Logic: Content: "How we optimized our search engine at Naver using Elasticsearch." Keyword: Elasticsearch (Correct) | Keyword: Naver (Wrong) Content: "Introducing the new feature of our service announced at Toss Slash 23." Keyword: Feature Engineering or the specific tech mentioned (Correct) | Keyword: Toss Slash 23 (Wrong) Content: "Our journey of migrating to a Distributed Database system." Keyword: Distributed Database (Correct)
-                                     """.format(classification=classification)),
+                                     Role: You are a Senior Technology Editor and Industry Analyst. Your mission is to parse technical articles to identify core engineering trends and maintain a high-quality database of technology stacks. Valid Categories: {category_pool} STRICT RULE: You MUST only select a category that exists in Valid Categories above. Do NOT invent, infer, or approximate new categories. Any output containing a category outside the list is considered invalid. Task Instructions: Analysis (thought_process): Before deciding on a keyword, briefly analyze the article's context. Determine: "Is the primary subject a specific technology (OSS, framework, theory) or is it an entity (company, department) or an event (conference, talk)?" If the article describes a tool developed by a specific company, focus only on the technical name of the tool or the underlying engineering concept. Keyword Selection (keyword): Select exactly one noun that represents the core technical subject. PRIORITY: Open Source Software (OSS), specific frameworks, programming languages, or architectural patterns (e.g., Kubernetes, React, Rust, Microservices, RAG). STRICT PROHIBITION: Do not use company names, organization names, or event titles. Bad: Naver, Toss, Kakao Enterprise, Line Engineering, NAVER Engineering Day, Slash24, AWS re:Invent. Good: Vector Database, Service Mesh, Kafka, WebAssembly. Category Selection (category): Select exactly one category from Valid Categories that most precisely describes the core subject of the article. VALIDATION: Confirm the selected category exists verbatim in Valid Categories. If not, reselect. If no category fits perfectly, select the closest one and note it in thought_process. Summary (summary): Provide a concise, one-sentence overview of the article. LANGUAGE REQUIREMENT: This field MUST be written in Korean. Few-Shot Examples for Keyword Logic: Content: "How we optimized our search engine at Naver using Elasticsearch." Keyword: Elasticsearch (Correct) | Keyword: Naver (Wrong) Content: "Introducing the new feature of our service announced at Toss Slash 23." Keyword: Feature Engineering or the specific tech mentioned (Correct) | Keyword: Toss Slash 23 (Wrong) Content: "Our journey of migrating to a Distributed Database system." Keyword: Distributed Database (Correct)
+                                     """.format(category_pool= ", ".join(categories))),
                 types.Part.from_text(text=" ".join(text)),
             ],
         ),
@@ -40,9 +62,6 @@ Tech: [IT,Electronics,Backend,Frontend,Infra,Security,Mobile,Embedded,Game,Robot
                 ),
                 "category": genai.types.Schema(
                     type = genai.types.Type.STRING,
-                ),
-                "field": genai.types.Schema(
-                    type= genai.types.Type.STRING,
                 ),
                 "summary": genai.types.Schema(
                     type = genai.types.Type.STRING,
