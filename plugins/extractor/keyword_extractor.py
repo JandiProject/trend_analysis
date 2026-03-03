@@ -30,7 +30,7 @@ Tech: [IT,Electronics,Backend,Frontend,Infra,Security,Mobile,Embedded,Game,Robot
         response_mime_type="application/json",
         response_schema=genai.types.Schema(
             type = genai.types.Type.OBJECT,
-            required = ["keywords", "category", "summary"],
+            required = ["keywords", "category", "summary", "field"],
             properties = {
                 "keywords": genai.types.Schema(
                     type = genai.types.Type.ARRAY,

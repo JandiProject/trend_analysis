@@ -85,7 +85,7 @@ def upload_results_to_db(results):
         field_to_id = {}
         existing_fields = db.query(Fields).all()
         for field in existing_fields:
-            field_to_id[field.field_name] = field.field_id
+            field_to_id[field.field_name.strip()] = field.field_id
         print(field_to_id)
 
         # is_analyzed, category 업데이트
