@@ -52,7 +52,7 @@ def generate(text: list[str]) -> str:
         response_mime_type="application/json",
         response_schema=genai.types.Schema(
             type = genai.types.Type.OBJECT,
-            required = ["keywords", "category", "summary", "field"],
+            required = ["keywords", "category", "summary"],
             properties = {
                 "keywords": genai.types.Schema(
                     type = genai.types.Type.ARRAY,
