@@ -18,7 +18,7 @@ async def upload_logs_to_s3_and_notify(flow: Flow, flow_run: FlowRun, state):
     
     # 1. Prefect API에서 로그 가져오기
     async with get_client() as client:
-        logs = await client.read_logs(log_filter=LogFilter(flow_run_id=LogFilterFlowRunId(any_=[UUID(flow_run_id)])))
+        logs = await client.read_logs()
         full_log_text = "\n".join([f"[{l.timestamp}] {l.level}: {l.message}" for l in logs])
 
     # 2. S3에 업로드 (boto3)
