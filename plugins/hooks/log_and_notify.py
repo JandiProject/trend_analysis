@@ -11,14 +11,13 @@ async def upload_logs_to_s3_and_notify(flow: Flow, flow_run: FlowRun, state):
     """Flow 완료 시 로그를 S3에 올리고 디스코드 알림을 보냄"""
 
     from discord_webhook import DiscordWebhook, DiscordEmbed
-    from prefect.logging import get_run_logger
 
     flow_run_id = str(flow_run.id)
     file_name = f"logs/{flow_run_id}.log"
     
     # 1. Prefect API에서 로그 가져오기
     async with get_client() as client:
-        logs = await client.read_logs()
+        logs = await client.read_logs(log_filter=LogFilter(flow_run_id=LogFilterFlowRunId(any_=[UUID(hex=flow_run_id)])))
         full_log_text = "\n".join([f"[{l.timestamp}] {l.level}: {l.message}" for l in logs])
 
     # 2. S3에 업로드 (boto3)

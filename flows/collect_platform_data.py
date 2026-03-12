@@ -27,6 +27,8 @@ def _undup_url(url_hash_list:list[str], db) -> list[str]:
     """
     from models.db_models import ExternalPost
 
+    logger = get_run_logger()
+    logger.info(f"중복 제거를 위해 DB에서 기존 URL 조회 시도: {len(url_hash_list)} 개의 URL 해시")
     existing_urls = db.query(ExternalPost.id).filter(ExternalPost.id.in_(url_hash_list)).all()
     existing_urls = [url[0] for url in existing_urls]
 
@@ -41,15 +43,27 @@ def collect_platform_data(config):
     from plugins.parser.parser import RSSParser
     from services.service_db import DbSession
     db = DbSession()
-    
+    logger = get_run_logger()
+    logger.info(f" collecting data for platform: {config['decoded_platform']}")
+
     # RSS 파싱
-    parser = RSSParser(config['platform'], config['url'])
-    articles = parser.parse()
+    try:        
+        parser = RSSParser(config['platform'], config['url'])
+        articles = parser.parse()
+        logger.info(f"RSS 파싱 완료: {len(articles)} 개의 기사 수집")
+    except Exception as e:
+        logger.error(f"RSS 파싱 실패: {e}")
+        return None
 
     # 중복 제거
-    hash_list = [article.encoded_url for article in articles]
-    undup_hash_list = _undup_url(hash_list, db)
-    articles = [article for article in articles if article.encoded_url in undup_hash_list]
+    try:
+        hash_list = [article.encoded_url for article in articles]
+        undup_hash_list = _undup_url(hash_list, db)
+        articles = [article for article in articles if article.encoded_url in undup_hash_list]
+        logger.info(f"중복 제거 완료: {len(articles)} 개의 신규 기사")
+    except Exception as e:
+        logger.error(f"중복 제거 실패: {e}")
+        return None
 
     # DataFrame 변환
     articles = [article.__dict__ for article in articles]
@@ -70,9 +84,14 @@ def save_to_sqlite(data):
     platform = data['platform']
     df = data['data']
     table_name = platform.replace(" ", "_").lower() + "_articles"
-    df.to_sql(table_name, conn, if_exists='replace', index=False)
-    conn.close()
+
     logger = get_run_logger()
+    try:
+        df.to_sql(table_name, conn, if_exists='replace', index=False)
+    except Exception as e:
+        logger.error(f"SQLite 저장 실패: {e}")
+    finally:
+        conn.close()
     logger.info(f"Saved {data['num_articles']} articles to table {table_name} in {db_path}")
 
 @task(name="save_to_s3")
@@ -179,7 +198,6 @@ def insert_to_postgres(data):
         db.rollback()
         raise
     finally:
-        db.commit()
         db.close()
 
 
