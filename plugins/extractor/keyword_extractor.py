@@ -14,8 +14,8 @@ category_to_field = {
     "Game": "Tech", "Robot": "Tech",
     # AI/Data
     "CV": "AI/Data", "NLP": "AI/Data", "DA": "AI/Data", "DE": "AI/Data",
-    # Bio
-    "Bio": "Bio",
+    # Industry
+    "Bio": "Industry", "Electronics": "Industry",
     # Daily
     "Daily": "Daily", "Review": "Daily", "Cook": "Daily", "Trip": "Daily",
     "Beauty": "Daily", "Movie": "Daily", "Fashion": "Daily", "Career": "Daily",
@@ -28,7 +28,7 @@ category_to_field = {
 categories = [
     "IT", "Electronics", "Backend", "Frontend", "Infra", "Security", "Mobile", "Embedded", "Game", "Robot",
     "CV", "NLP", "DA", "DE",
-    "Bio",
+    "Bio", "Electronics",
     "Daily", "Review", "Cook", "Trip", "Beauty", "Movie", "Fashion", "Career",
     "Literature", "History", "Linguistics",
     "Economics", "Geography", "Social", "Other"
@@ -36,7 +36,7 @@ categories = [
 Categories = Literal [
     "IT", "Electronics", "Backend", "Frontend", "Infra", "Security", "Mobile", "Embedded", "Game", "Robot",
     "CV", "NLP", "DA", "DE",
-    "Bio",
+    "Bio", "Electronics",
     "Daily", "Review", "Cook", "Trip", "Beauty", "Movie", "Fashion", "Career",
     "Literature", "History", "Linguistics",
     "Economics", "Geography", "Social", "Other"
