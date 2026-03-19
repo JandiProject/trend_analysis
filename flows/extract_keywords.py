@@ -48,7 +48,7 @@ def extract_keywords(s3_data:dict):
     result = generate(process_text(s3_data['rss_content']))
 
     logger.info(f"Extracted keywords for {len(result)} articles.")
-    result = json.loads(result) | {'id': s3_data['encoded_url']} | {'source': s3_data['']}
+    result = json.loads(result) | {'id': s3_data['encoded_url']}
     logger.info(result)
     return result
 
