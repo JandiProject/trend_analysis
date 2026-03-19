@@ -48,7 +48,7 @@ def extract_keywords(s3_data:dict):
     result = generate(process_text(s3_data['rss_content']))
 
     logger.info(f"Extracted keywords for {len(result)} articles.")
-    result = json.loads(result) | {'id': s3_data['encoded_url']}
+    result = json.loads(result) | {'id': s3_data['encoded_url']} | {'source': s3_data['']}
     logger.info(result)
     return result
 
@@ -134,7 +134,41 @@ def upload_results_to_db(results):
 
 @task(name="backup_results_to_s3")
 def backup_results_to_s3(results):
-    pass
+    """
+    수집된 데이터를 Parquet 형식으로 S3에 저장
+    """
+
+    import boto3
+    import io
+    import pendulum
+    import os
+    import pandas as pd
+    s3_client = boto3.client('s3')
+
+    results = [{"keyword": keyword, "post_id": result['id'], "category": result.get('category', None)} for result in results for keyword in result.get('keywords', [])]
+    
+    df = pd.DataFrame(results)
+    # 2. 메모리 버퍼에 Parquet 쓰기
+    buffer = io.BytesIO()
+    df.to_parquet(buffer, index=False, engine='pyarrow', compression='snappy')
+    buffer.seek(0)
+
+    now = pendulum.now('Asia/Seoul')
+    partition_date = now.to_date_string()        # 2025-02-05
+    timestamp = now.format('HHmmss')             # 203015 (시분초)
+
+    object_key = f"blog-data/raw/dt={partition_date}/{timestamp}.parquet"
+    bucket_name = os.getenv('S3_BUCKET_NAME')
+    try:
+        s3_client.upload_fileobj(buffer, bucket_name, object_key)
+        logger = get_run_logger()
+        logger.info(f"S3 업로드 성공: s3://{bucket_name}/{object_key}")
+        return object_key
+    except Exception as e:
+        logger = get_run_logger()
+        logger.error(f"S3 업로드 실패: {e}")
+        raise
+
 
 @flow(name="Extract keywords flow", on_completion=[upload_logs_to_s3_and_notify], on_failure=[upload_logs_to_s3_and_notify], task_runner=ThreadPoolTaskRunner(max_workers=4), log_prints=True) # type: ignore
 def extract_keywords_flow(collected_obj_keys: list[str]):
